@@ -1,4 +1,4 @@
-﻿export * from './amenity.type.js';
+﻿export * from './amenity.enum.js';
 export * from './city.enum.js';
 export * from './user.type.js';
 export * from './offer.type.js';

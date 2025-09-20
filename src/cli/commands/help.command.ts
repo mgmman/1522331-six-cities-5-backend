@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { ICommand } from './command.interface.js';
 
 export class HelpCommand implements ICommand {
@@ -6,7 +7,7 @@ export class HelpCommand implements ICommand {
   }
 
   public async execute(..._parameters: string[]): Promise<void> {
-    console.info(`
+    console.info(chalk.yellow(`
         Программа для подготовки данных для REST API сервера.
 
         Пример: cli.js --<command> [--arguments]
@@ -18,6 +19,6 @@ export class HelpCommand implements ICommand {
          --import <path>:             # импортирует данные из TSV. Параметр path указывает путь до файла
          --generate <n> <path> <url>  # генерирует произвольное количество тестовых данных. Параметр n задаёт количество генерируемых предложений.
          Параметр path указывает путь для сохранения файла с предложениями. Параметр url задаёт адрес сервера, с которого необходимо взять данные
-    `);
+    `));
   }
 }

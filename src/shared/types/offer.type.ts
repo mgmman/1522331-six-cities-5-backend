@@ -1,6 +1,6 @@
 ﻿import {City} from './city.enum';
 import {HousingType} from './housing-type.enum';
-import {Amenity} from './amenity.type';
+import {Amenity} from './amenity.enum';
 import {Coordinates} from './coordinates.type';
 
 export type Offer = {
