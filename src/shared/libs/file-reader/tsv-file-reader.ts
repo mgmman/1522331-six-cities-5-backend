@@ -36,10 +36,7 @@ export class TSVFileReader implements IFileReader {
         bedrooms: parseInt(bedrooms, 10),
         maxGuests: parseInt(maxGuests, 10),
         price: parseInt(price, 10),
-        amenities: amenities.trim()
-                            .split(';')
-                            .map((x) => isMemberOfUnion(x, AMENITIES) ? x : undefined)
-                            .filter((x) => !!x) as Amenity[],
+        amenities: amenities.trim().split(';').map((x) => isMemberOfUnion(x, AMENITIES) ? x : undefined).filter((x) => !!x) as Amenity[],
         authorId,
         commentCount: 0,
         coordinates: {latitude: parseFloat(latitude), longitude: parseFloat(longitude)},
