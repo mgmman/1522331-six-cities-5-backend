@@ -1,6 +1,6 @@
 ﻿import { IFileReader } from './file-reader.interface.js';
 import { readFileSync } from 'node:fs';
-import { City, Offer, HousingType, Amenity } from '../../types/index.js';
+import { City, Offer, HousingType, isMemberOfUnion, AMENITIES, Amenity } from '../../types/index.js';
 
 export class TSVFileReader implements IFileReader {
   private rawData = '';
@@ -31,15 +31,18 @@ export class TSVFileReader implements IFileReader {
         images: [image1, image2, image3, image4, image5, image6],
         isPremium: isPremium === 'true',
         isFavorite: isFavorite === 'true',
-        rating: Number.parseInt(rating, 10),
+        rating: parseFloat(rating),
         type: HousingType[type as keyof typeof HousingType],
-        bedrooms: Number.parseInt(bedrooms, 10),
-        maxGuests: Number.parseInt(maxGuests, 10),
-        price: Number.parseInt(price, 10),
-        amenities: amenities.trim().split(';').map((x) => Amenity[x as keyof typeof Amenity]),
+        bedrooms: parseInt(bedrooms, 10),
+        maxGuests: parseInt(maxGuests, 10),
+        price: parseInt(price, 10),
+        amenities: amenities.trim()
+                            .split(';')
+                            .map((x) => isMemberOfUnion(x, AMENITIES) ? x : undefined)
+                            .filter((x) => !!x) as Amenity[],
         authorId,
         commentCount: 0,
-        coordinates: {latitude: Number.parseInt(latitude, 10), longitude: Number.parseInt(longitude, 10)},
+        coordinates: {latitude: parseFloat(latitude), longitude: parseFloat(longitude)},
       }));
   }
 }
