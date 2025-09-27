@@ -38,7 +38,7 @@ export class TSVOfferGenerator implements IOfferGenerator {
     const type = getRandomItem<string>(Object.keys(HousingType));
     const bedrooms = generateRandomValue(MIN_BEDROOMS, MAX_BEDROOMS);
     const maxGuests = generateRandomValue(MIN_GUESTS, MAX_GUESTS);
-    const amenities = getRandomItems<string>(AMENITIES as unknown as string[]);
+    const amenities = getRandomItems<string>(AMENITIES as unknown as string[]).join(';');
     const coordinates = getRandomItem(this.mockData.locations);
 
     const publicationDate = dayjs()

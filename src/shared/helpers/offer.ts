@@ -1,6 +1,6 @@
 ﻿import {AMENITIES, Amenity, City, HousingType, isMemberOfUnion, Offer} from '../types/index.js';
 
-export function ParseOffer(data: string): Offer {
+export function parseOffer(data: string): Offer {
   const [
     title,
     description,

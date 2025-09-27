@@ -3,7 +3,7 @@
 }
 
 export function generateRandomBoolean(){
-  return !!generateRandomValue(0, 1);
+  return generateRandomValue(0, 1) === 1;
 }
 
 export function getRandomItems<T>(items: T[]):T[] {
@@ -13,9 +13,11 @@ export function getRandomItems<T>(items: T[]):T[] {
 }
 
 export function getRandomNItems<T>(items: T[], n: number):T[] {
-  const startPosition = generateRandomValue(0, items.length - 1);
-  const endPosition = startPosition + n;
-  return items.slice(startPosition, endPosition);
+  const result: T[] = [];
+  for (let i = 0; i < n; i++) {
+    result.push(getRandomItem(items));
+  }
+  return result;
 }
 
 export function getRandomItem<T>(items: T[]):T {
