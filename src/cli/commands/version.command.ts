@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { ICommand } from './command.interface.js';
 import chalk from 'chalk';
-import { PACKAGE_JSON_PATH } from '../../shared/constants/paths.js';
+import { PACKAGE_JSON_PATH } from '../../shared/constants/index.js';
 
 type PackageJSONConfig = {
   version: string;

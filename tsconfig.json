@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "Node",
     "declaration": true,
@@ -12,6 +12,7 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "strictPropertyInitialization": false,
     "importHelpers": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -23,9 +24,6 @@
     "types": [
       "node",
     ],
-    "lib": [
-      "ESNext"
-    ]
   },
   "include": [
     "src/**/*.ts"
@@ -33,6 +31,9 @@
   "exclude": [
     "node_modules",
     "**/*.test.ts"
+  ],
+  "lib": [
+    "ESNext"
   ],
   "ts-node": {
     "esm": true

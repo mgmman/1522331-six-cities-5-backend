@@ -1,27 +1,33 @@
 import { ICommand } from './command.interface.js';
 import { TSVFileReader } from '../../shared/libs/file-reader/index.js';
-import chalk from 'chalk';
+import { parseOffer, getErrorMessage } from '../../shared/helpers/index.js';
 
 export class ImportCommand implements ICommand {
   public getName(): string {
     return '--import';
   }
 
-  public execute(...parameters: string[]): void {
+  private onImportedLine(line: string) {
+    const offer = parseOffer(line);
+    console.info(offer);
+  }
+
+  private onCompleteImport(count: number) {
+    console.info(`${count} rows imported.`);
+  }
+
+  public async execute(...parameters: string[]): Promise<void> {
     const [filename] = parameters;
     const fileReader = new TSVFileReader(filename.trim());
 
+    fileReader.on('line', this.onImportedLine);
+    fileReader.on('end', this.onCompleteImport);
+
     try {
-      fileReader.read();
-      console.log(fileReader.toArray());
-    } catch (err) {
-
-      if (!(err instanceof Error)) {
-        throw err;
-      }
-
-      console.error(chalk.red(`Can't import data from file: ${chalk.yellow(filename)}`));
-      console.error(chalk.red(`Details: ${chalk.redBright(err.message)}`));
+      await fileReader.read();
+    } catch (error) {
+      console.error(`Can't import data from file: ${filename}`);
+      console.error(getErrorMessage(error));
     }
   }
 }
