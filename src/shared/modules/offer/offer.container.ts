@@ -1,6 +1,6 @@
-﻿import {IOfferService} from './offer-service.interface';
-import {Component} from '../../types';
-import {OfferEntity, OfferModel} from './offer.entity';
+﻿import {IOfferService} from './offer-service.interface.js';
+import {Component} from '../../types/index.js';
+import {OfferEntity, OfferModel} from './offer.entity.js';
 import {types} from '@typegoose/typegoose';
 import {DefaultOfferService} from './default-offer-service.js';
 import {ContainerModule, ContainerModuleLoadOptions} from 'inversify';

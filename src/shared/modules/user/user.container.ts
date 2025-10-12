@@ -8,5 +8,6 @@ import {ContainerModule, ContainerModuleLoadOptions} from 'inversify';
 export const userContainer: ContainerModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     options.bind<IUserService>(Component.UserService).to(DefaultUserService).inSingletonScope();
+    // @ts-ignore
     options.bind<types.ModelType<UserEntity>>(Component.UserModel).toConstantValue(UserModel);
   });

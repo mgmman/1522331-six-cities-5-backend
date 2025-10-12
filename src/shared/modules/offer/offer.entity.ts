@@ -1,5 +1,5 @@
 ﻿import { defaultClasses, getModelForClass, modelOptions, prop, Ref } from '@typegoose/typegoose';
-import {Amenity, City, Coordinates, Offer, HousingType} from '../../types/index.js';
+import {Amenity, City, Coordinates, HousingType} from '../../types/index.js';
 import {UserEntity} from '../user/index.js';
 
 export interface OfferEntity extends defaultClasses.Base {
@@ -15,7 +15,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({
     required: true,
     type: () => String,
-    enum: HousingType
+    enum: City
   })
   public city: City;
 
@@ -69,8 +69,6 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     required: true
   })
   public author!: Ref<UserEntity>;
-
-  public publicationDate: Date = this.createdAt ?? new Date();
 }
 
 export const OfferModel = getModelForClass(OfferEntity);

@@ -44,10 +44,22 @@ export class ImportCommand implements ICommand {
     }, this.salt);
 
     await this.offerService.create({
-      ...offer,
-      authorId: user.id,
+      title: offer.title,
+      description: offer.description,
+      city: offer.city,
+      previewImage: offer.previewImage,
+      images: offer.images,
+      isPremium: offer.isPremium,
+      isFavorite: offer.isFavorite,
+      rating: offer.rating,
+      type: offer.type,
+      bedrooms: offer.bedrooms,
+      maxGuests: offer.maxGuests,
+      price: offer.price,
+      amenities: offer.amenities,
+      author: user.id,
+      coordinates: offer.coordinates,
     });
-
   }
 
   public getName(): string {

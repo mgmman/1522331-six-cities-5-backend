@@ -14,6 +14,6 @@ export class CreateOfferDto {
   maxGuests: number;
   price: number;
   amenities: Amenity[];
-  authorId: string;
+  author: string;
   coordinates: Coordinates;
 }
