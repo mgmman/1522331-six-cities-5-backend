@@ -4,11 +4,10 @@ import { parseOffer, getErrorMessage, getMongoURI } from '../../shared/helpers/i
 import { IUserService } from '../../shared/modules/user/user-service.interface.js';
 import { DefaultOfferService, OfferModel, IOfferService } from '../../shared/modules/offer/index.js';
 import { IDatabaseClient, MongoClient } from '../../shared/libs/db-client/index.js';
-import { ILogger } from '../../shared/libs/logger/index.js';
-import { ConsoleLogger } from '../../shared/libs/logger/console.logger.js';
+import { ConsoleLogger, ILogger } from '../../shared/libs/logger/index.js';
 import { DefaultUserService, UserModel } from '../../shared/modules/user/index.js';
-import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.constant.js';
 import { Offer } from '../../shared/types/index.js';
+import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from '../../shared/constants/index.js';
 
 export class ImportCommand implements ICommand {
   private userService: IUserService;
@@ -39,26 +38,14 @@ export class ImportCommand implements ICommand {
   }
 
   private async saveOffer(offer: Offer) {
-    const categories: string[] = [];
     const user = await this.userService.findOrCreate({
-      ...offer.user,
+      ...offer.author,
       password: DEFAULT_USER_PASSWORD
     }, this.salt);
 
-    for (const { name } of offer.categories) {
-      const existCategory = await this.categoryService.findByCategoryNameOrCreate(name, { name });
-      categories.push(existCategory.id);
-    }
-
     await this.offerService.create({
-      categories,
-      userId: user.id,
-      title: offer.title,
-      description: offer.description,
-      image: offer.image,
-      postDate: offer.postDate,
-      price: offer.price,
-      type: offer.type,
+      ...offer,
+      authorId: user.id,
     });
 
   }

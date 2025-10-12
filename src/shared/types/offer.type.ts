@@ -2,6 +2,7 @@
 import {HousingType} from './housing-type.enum';
 import {Amenity} from './amenity.enum';
 import {Coordinates} from './coordinates.type';
+import { User } from './user.type';
 
 export type Offer = {
   title: string;
@@ -18,7 +19,7 @@ export type Offer = {
   maxGuests: number;
   price: number;
   amenities: Amenity[];
-  author: string;
+  author: User;
   commentCount: number;
   coordinates: Coordinates;
 }

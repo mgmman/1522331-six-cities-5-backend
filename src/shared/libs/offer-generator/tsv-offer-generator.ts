@@ -1,6 +1,6 @@
 ﻿import dayjs from 'dayjs';
 import { IOfferGenerator } from './offer-generator.interface.js';
-import {AMENITIES, City, HousingType, MockServerData} from '../../types/index.js';
+import {AMENITIES, City, HousingType, MockServerData, UserType} from '../../types/index.js';
 import {
   generateRandomBoolean,
   generateRandomValue,
@@ -30,7 +30,10 @@ export class TSVOfferGenerator implements IOfferGenerator {
     const previewImage = getRandomItem(this.mockData.previewImages);
     const [image1, image2, image3, image4, image5, image6] = getRandomNItems(this.mockData.images, 6);
     const price = generateRandomValue(MIN_PRICE, MAX_PRICE).toString();
-    const authorId = generateRandomValue(1, 10000);
+    const name = getRandomItem(this.mockData.names);
+    const email = getRandomItem(this.mockData.emails);
+    const avatar = getRandomItem(this.mockData.avatars);
+    const userType = getRandomItem<string>(Object.keys(UserType));
     const city = getRandomItem<string>(Object.keys(City));
     const isPremium = generateRandomBoolean();
     const isFavorite = generateRandomBoolean();
@@ -65,7 +68,10 @@ export class TSVOfferGenerator implements IOfferGenerator {
       maxGuests,
       price,
       amenities,
-      authorId,
+      name,
+      email,
+      avatar,
+      userType,
       coordinates.latitude,
       coordinates.longitude
     ].join('\t');

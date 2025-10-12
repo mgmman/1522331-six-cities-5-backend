@@ -11,7 +11,7 @@ export interface OfferEntity extends defaultClasses.Base {
   }
 })
 
-export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
+export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({
     required: true,
     type: () => String,
@@ -71,8 +71,6 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
   public author!: Ref<UserEntity>;
 
   public publicationDate: Date = this.createdAt ?? new Date();
-
-  public author: string = this.author.id;
 }
 
 export const OfferModel = getModelForClass(OfferEntity);

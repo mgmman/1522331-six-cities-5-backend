@@ -1,4 +1,4 @@
-﻿import {AMENITIES, Amenity, City, HousingType, isMemberOfUnion, Offer} from '../types/index.js';
+﻿import {AMENITIES, Amenity, City, HousingType, isMemberOfUnion, Offer, UserType} from '../types/index.js';
 
 export function parseOffer(data: string): Offer {
   const [
@@ -21,7 +21,10 @@ export function parseOffer(data: string): Offer {
     maxGuests,
     price,
     amenities,
-    authorId,
+    name,
+    email,
+    avatar,
+    userType,
     latitude,
     longitude] = data.replace('\n', '')
     .split('\t');
@@ -41,7 +44,7 @@ export function parseOffer(data: string): Offer {
     maxGuests: parseInt(maxGuests, 10),
     price: parseInt(price, 10),
     amenities: amenities.trim().split(';').map((x) => isMemberOfUnion(x, AMENITIES) ? x : undefined).filter((x) => !!x) as Amenity[],
-    author: authorId,
+    author: {name, avatar, type: UserType[userType as keyof typeof UserType], email},
     commentCount: 0,
     coordinates: {latitude: parseFloat(latitude), longitude: parseFloat(longitude)},
   };
