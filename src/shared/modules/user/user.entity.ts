@@ -1,6 +1,7 @@
 import { defaultClasses, getModelForClass, prop, modelOptions } from '@typegoose/typegoose';
 import { User, UserType } from '../../types/index.js';
 import { createSHA256 } from '../../helpers/index.js';
+import {CreateUserDto} from './dto/create-user-dto.js';
 
 export interface UserEntity extends defaultClasses.Base {}
 
@@ -15,22 +16,22 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   public email: string;
 
   @prop({ required: false, default: '' })
-  public avatarPath?: string;
+  public avatar?: string;
 
   @prop({ required: true, default: '' })
   public name: string;
 
   @prop({ required: true, default: '' })
-  public password: string;
+  private password?: string;
 
   @prop({ required: true, default: '' })
   public type: UserType;
 
-  constructor(userData: User) {
+  constructor(userData: CreateUserDto) {
     super();
 
     this.email = userData.email;
-    this.avatarPath = userData.avatar;
+    this.avatar = userData.avatarPath;
     this.name = userData.name;
     this.type = userData.type;
   }
