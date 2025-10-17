@@ -6,3 +6,4 @@ export const MIN_PRICE = 100;
 export const MAX_PRICE = 100_000;
 export const MAX_RATING = 5;
 export const MIN_RATING = 1;
+export const DEFAULT_OFFER_COUNT = 25;
