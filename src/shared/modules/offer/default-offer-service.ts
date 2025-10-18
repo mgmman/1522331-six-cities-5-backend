@@ -58,11 +58,11 @@ export class DefaultOfferService implements IOfferService {
   }
 
   findPremiumInCity(city: City): Promise<DocumentType<OfferEntity>[]> {
-    return this.offerModel.find({city, isPremium: true}).populate(['author']).exec()
+    return this.offerModel.find({city, isPremium: true}).populate(['author']).exec();
   }
 
   findFavourites(userId: string): Promise<DocumentType<OfferEntity>[]> {
-    return this.offerModel.find({favoritedBy: userId}).populate(['author']).exec()
+    return this.offerModel.find({favoritedBy: userId}).populate(['author']).exec();
   }
 
   addToFavourites(offerId: string, userId: string): Promise<DocumentType<OfferEntity> | null> {
@@ -72,7 +72,7 @@ export class DefaultOfferService implements IOfferService {
       { new: true }
     )
       .populate(['author'])
-      .exec()
+      .exec();
   }
 
   async deleteFromFavourites(offerId: string, userId: string): Promise<DocumentType<OfferEntity> | null> {
@@ -82,73 +82,73 @@ export class DefaultOfferService implements IOfferService {
       { new: true }
     )
       .populate(['author'])
-      .exec()
+      .exec();
   }
 
   async recalculateRating(offerId: string): Promise<void> {
     try {
-    const result = await this.offerModel.aggregate([
-      {
-        $match: { _id: offerId }
-      },
-      {
-        $lookup: {
-          from: 'comments',
-          localField: '_id',
-          foreignField: 'offerId',
-          as: 'comments'
-        }
-      },
-      {
-        $unwind: {
-          path: '$comments',
-          preserveNullAndEmptyArrays: true
-        }
-      },
-      {
-        $group: {
-          _id: '$_id',
-          averageRating: {
-            $avg: '$comments.rating'
-          },
-          commentCount: {
-            $sum: {
-              $cond: [{ $ifNull: ['$comments', false] }, 1, 0]
+      const result = await this.offerModel.aggregate([
+        {
+          $match: { _id: offerId }
+        },
+        {
+          $lookup: {
+            from: 'comments',
+            localField: '_id',
+            foreignField: 'offerId',
+            as: 'comments'
+          }
+        },
+        {
+          $unwind: {
+            path: '$comments',
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          $group: {
+            _id: '$_id',
+            averageRating: {
+              $avg: '$comments.rating'
+            },
+            commentCount: {
+              $sum: {
+                $cond: [{ $ifNull: ['$comments', false] }, 1, 0]
+              }
+            },
+          }
+        },
+        {
+          $project: {
+            averageRating: {
+              $ifNull: ['$averageRating', 0]
+            },
+            commentCount: 1,
+            rating: {
+              $round: [{ $ifNull: ['$averageRating', 0] }, 1]
             }
-          },
-        }
-      },
-      {
-        $project: {
-          averageRating: {
-            $ifNull: ['$averageRating', 0]
-          },
-          commentCount: 1,
-          rating: {
-            $round: [{ $ifNull: ['$averageRating', 0] }, 1]
           }
         }
+      ]);
+
+      if (result.length > 0) {
+        const { commentCount, rating } = result[0];
+
+        await this.offerModel.findByIdAndUpdate(
+          offerId,
+          {
+            rating: rating,
+            commentCount: commentCount
+          }
+        );
+
+        console.log(`Updated rating for offer ${offerId}: ${rating} (${commentCount} comments)`);
+      } else {
+        console.log(`Offer ${offerId} not found`);
       }
-    ]);
-
-    if (result.length > 0) {
-      const { commentCount, rating } = result[0];
-
-      await this.offerModel.findByIdAndUpdate(
-        offerId,
-        {
-          rating: rating,
-          commentCount: commentCount
-        }
-      );
-
-      console.log(`Updated rating for offer ${offerId}: ${rating} (${commentCount} comments)`);
-    } else {
-      console.log(`Offer ${offerId} not found`);
+    } catch (error) {
+      console.error(`Error updating rating for offer ${offerId}:`, error);
+      throw error;
     }
-  } catch (error) {
-    console.error(`Error updating rating for offer ${offerId}:`, error);
-    throw error;
-  }
   }
 }
