@@ -1,0 +1,5 @@
+﻿import { NextFunction, Request, Response } from 'express';
+
+export interface IExceptionFilter {
+  catch(error: Error, req: Request, res: Response, next:NextFunction): void;
+}

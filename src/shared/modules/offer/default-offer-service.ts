@@ -1,6 +1,6 @@
 ﻿import { inject, injectable } from 'inversify';
 import { IOfferService } from './offer-service.interface.js';
-import { City, Component, SortType } from '../../types/index.js';
+import { City, Component } from '../../types/index.js';
 import { ILogger } from '../../libs/logger/index.js';
 import { DocumentType, types } from '@typegoose/typegoose';
 import { OfferEntity } from './offer.entity.js';
