@@ -1,9 +1,8 @@
-﻿import {Amenity, City, Coordinates, HousingType} from '../../../types';
+﻿import {Amenity, HousingType} from '../../../types';
 
-export class CreateOfferDto {
+export class UpdateOfferDto {
   title: string;
   description: string;
-  city: City;
   previewImage: string;
   images: [string, string, string, string, string, string];
   isPremium?: boolean;
@@ -13,6 +12,4 @@ export class CreateOfferDto {
   maxGuests: number;
   price: number;
   amenities: Amenity[];
-  author: string;
-  coordinates: Coordinates;
 }
