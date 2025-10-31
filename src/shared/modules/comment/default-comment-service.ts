@@ -6,10 +6,15 @@ import { CommentEntity } from './comment.entity.js';
 import { CreateCommentDto } from './dto/create-comment-dto.js';
 
 @injectable()
-export class DefaultCommentService implements ICommentService {
+export class DefaultCommentService implements ICommentService{
   constructor(
     @inject(Component.CommentModel) private readonly commentModel: types.ModelType<CommentEntity>
   ) {}
+
+  public async exists(documentId: string): Promise<boolean> {
+    return (await this.commentModel
+      .exists({_id: documentId})) !== null;
+  }
 
   public async create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {
     const comment = await this.commentModel.create(dto);
