@@ -2,7 +2,7 @@
 import { StatusCodes } from 'http-status-codes';
 import { IMiddleware } from './middleware.interface.js';
 import { HttpError } from '../errors/http-error.js';
-import {City} from '../../../types';
+import {City} from '../../../types/index.js';
 
 export class ValidateCityMiddleware implements IMiddleware {
   constructor(private param: string) {}
@@ -10,7 +10,7 @@ export class ValidateCityMiddleware implements IMiddleware {
   public execute({ params }: Request, _res: Response, next: NextFunction): void {
     const city = params[this.param];
 
-    if (Object.values(City).includes(city)) {
+    if (Object.values(City).includes(city as City)) {
       return next();
     }
 

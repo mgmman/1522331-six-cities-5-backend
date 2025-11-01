@@ -36,18 +36,12 @@
     range: 'bedrooms must be between 1 and 8',
   },
   coordinates: {
-    invalidFormat: {
-      message: 'Coordinates must be object',
-    },
+    invalidFormat: 'Coordinates must be object',
     latitude: {
-      invalidFormat: {
-        message: 'Latitude must be number'
-      },
+      invalidFormat: 'Latitude must be number'
     },
     longitude: {
-      invalidFormat: {
-        message: 'Longitude must be number',
-      },
+      invalidFormat: 'Longitude must be number'
     },
   }
 } as const;
