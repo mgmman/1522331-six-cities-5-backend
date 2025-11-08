@@ -3,7 +3,6 @@ import {
   IsBoolean,
   IsEnum,
   IsInt,
-  IsMongoId,
   IsObject,
   IsOptional,
   IsString,
@@ -58,7 +57,6 @@ export class CreateOfferDto {
   @IsString({ each: true, message: offerValidations.price.invalidFormat })
   public amenities: Amenity[];
 
-  @IsMongoId({ message: offerValidations.author.invalidId })
   public author: string;
 
   @IsObject({ message: offerValidations.coordinates.invalidFormat})
