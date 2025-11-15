@@ -9,6 +9,7 @@ export class UploadFileMiddleware implements IMiddleware {
   constructor(
     private uploadDirectory: string,
     private fieldName: string,
+    private isMultipleFiles?: boolean,
   ) {}
 
   public async execute(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -24,6 +25,8 @@ export class UploadFileMiddleware implements IMiddleware {
     const uploadSingleFileMiddleware = multer({ storage })
       .single(this.fieldName);
 
-    uploadSingleFileMiddleware(req, res, next);
+    const uploadMultipleFiles = multer({ storage }).array(this.fieldName);
+
+    this.isMultipleFiles ? uploadMultipleFiles(req, res, next) : uploadSingleFileMiddleware(req, res, next);
   }
 }

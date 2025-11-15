@@ -1,7 +1,7 @@
 ﻿import { StatusCodes } from 'http-status-codes';
 import { NextFunction, Request, Response } from 'express';
 import { IMiddleware } from './middleware.interface.js';
-import {HttpError} from '../errors/http-error';
+import {HttpError} from '../errors/http-error.js';
 
 export class PrivateRouteMiddleware implements IMiddleware {
   public async execute({ tokenPayload }: Request, _res: Response, next: NextFunction): Promise<void> {
