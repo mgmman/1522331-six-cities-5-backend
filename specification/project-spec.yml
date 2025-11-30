@@ -14,8 +14,6 @@ tags:
     description: Действия с комментариями.
   - name: users
     description: Действия с пользователем.
-  - name: favorites
-    description: Действия с избранными предложениями.
 
 paths:
   # Предложения
@@ -262,7 +260,7 @@ paths:
     get:
       summary: Получения списка предложений, добавленных в избранное
       tags:
-        - Favorites
+        - Offers
       security:
         - bearerAuth: []
       responses:
@@ -279,7 +277,7 @@ paths:
     post:
       summary: Добавление предложения в избранное
       tags:
-        - Favorites
+        - Offers
       security:
         - bearerAuth: []
       parameters:
@@ -297,7 +295,7 @@ paths:
     delete:
       summary: Удаление предложения из избранного
       tags:
-        - Favorites
+        - Offers
       security:
         - bearerAuth: []
       parameters:
