@@ -13,6 +13,11 @@ export class DefaultUserService implements IUserService {
     @inject(Component.UserModel) private readonly userModel: types.ModelType<UserEntity>
   ) {}
 
+  public async exists(documentId: string): Promise<boolean> {
+    return (await this.userModel
+      .exists({_id: documentId})) !== null;
+  }
+
   public async create(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
     const user = new UserEntity(dto);
     user.setPassword(dto.password, salt);

@@ -57,15 +57,15 @@ export class DefaultOfferService implements IOfferService {
     return this.offerModel.findById(offerId).populate(['author']).exec();
   }
 
-  findPremiumInCity(city: City): Promise<DocumentType<OfferEntity>[]> {
+  public async findPremiumInCity(city: City): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel.find({city, isPremium: true}).populate(['author']).exec();
   }
 
-  findFavourites(userId: string): Promise<DocumentType<OfferEntity>[]> {
+  public async findFavourites(userId: string): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel.find({favoritedBy: userId}).populate(['author']).exec();
   }
 
-  addToFavourites(offerId: string, userId: string): Promise<DocumentType<OfferEntity> | null> {
+  public async addToFavourites(offerId: string, userId: string): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel.findByIdAndUpdate(
       offerId,
       { $push: { favouritedBy: userId } },
