@@ -8,6 +8,7 @@ export class CreateOfferDto {
   images: [string, string, string, string, string, string];
   isPremium?: boolean;
   isFavorite?: boolean;
+  rating: number;
   type: HousingType;
   bedrooms: number;
   maxGuests: number;
