@@ -14,7 +14,7 @@ import {UpdateOfferDto} from './dto/update-offer-dto.js';
 import {CreateOfferRequest} from './types/create-offer-request.type';
 import {CreateOfferDto} from './dto/create-offer-dto.js';
 import {CommentRdo} from '../comment/rdo/comment-rdo.js';
-import {ValidateCityMiddleware} from '../../libs/rest/middleware/validate-city.middleware';
+import {ValidateCityMiddleware} from '../../libs/rest/middleware/validate-city.middleware.js';
 
 @injectable()
 export default class OfferController extends ControllerBase {

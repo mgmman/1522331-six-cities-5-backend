@@ -2,9 +2,9 @@
 import {IsNumber} from 'class-validator';
 
 export class CoordinatesDto {
-  @IsNumber(offerValidations.coordinates.latitude.invalidFormat)
+  @IsNumber({}, {message: offerValidations.coordinates.latitude.invalidFormat})
   public latitude: number;
 
-  @IsNumber(offerValidations.coordinates.latitude.invalidFormat)
+  @IsNumber({}, {message: offerValidations.coordinates.longitude.invalidFormat})
   public longitude: number;
 }

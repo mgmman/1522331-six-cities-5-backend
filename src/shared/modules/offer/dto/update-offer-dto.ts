@@ -1,4 +1,4 @@
-﻿import {Amenity, City, HousingType} from '../../../types';
+﻿import {Amenity, City, HousingType} from '../../../types/index.js';
 import {
   IsBoolean,
   IsEnum,
@@ -58,7 +58,7 @@ export class UpdateOfferDto {
   @IsString({ each: true, message: offerValidations.price.invalidFormat })
   public amenities: Amenity[];
 
-  @IsObject(offerValidations.coordinates.invalidFormat)
+  @IsObject({ message: offerValidations.coordinates.invalidFormat})
   @ValidateNested()
   @Type(() => CoordinatesDto)
   public coordinates: CoordinatesDto;

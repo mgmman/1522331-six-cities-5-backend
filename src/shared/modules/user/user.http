@@ -25,3 +25,21 @@ Content-Type: application/json
 }
 
 ###
+
+## Отправить изображение
+
+POST http://localhost:1234/users/68eba209130634dc450bb9a3/avatar HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="avatar"; filename="screen.png"
+Content-Type: image/png
+
+< C:\work\1522331-six-cities-5-backend\test-img\test.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+##
+
+###
+
+GET http://localhost:1234/upload/test.txt HTTP/1.1
