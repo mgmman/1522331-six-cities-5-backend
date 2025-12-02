@@ -16,6 +16,10 @@ import {CreateOfferRequest} from './types/create-offer-request.type';
 import {CreateOfferDto} from './dto/create-offer-dto.js';
 import {CommentRdo} from '../comment/rdo/comment-rdo.js';
 import {ValidateCityMiddleware} from '../../libs/rest/middleware/validate-city.middleware.js';
+import { UploadImageRdo } from './rdo/upload-image.rdo.js';
+import { IConfig, RestSchema } from '../../libs/config/index.js';
+import { UploadFileMiddleware } from '../../libs/rest/middleware/upload-file.middleware.js';
+import { UserIsAuthorMiddleware } from '../../libs/rest/middleware/user-is-author.middleware.js';
 
 @injectable()
 export default class OfferController extends ControllerBase {
@@ -23,6 +27,7 @@ export default class OfferController extends ControllerBase {
     @inject(Component.Logger) protected logger: ILogger,
     @inject(Component.OfferService) private readonly offerService: IOfferService,
     @inject(Component.CommentService) private readonly commentService: ICommentService,
+    @inject(Component.Config) private readonly configService: IConfig<RestSchema>,
   ) {
     super(logger);
 
@@ -34,6 +39,26 @@ export default class OfferController extends ControllerBase {
       middlewares: [
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+      ]
+    });
+    this.addRoute({
+      path: '/:offerId/images',
+      method: HttpMethod.Post,
+      handler: this.uploadImages,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'images'),
+      ]
+    });
+    this.addRoute({
+      path: '/:offerId/previewImage',
+      method: HttpMethod.Post,
+      handler: this.uploadPreviewImage,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'previewImage'),
       ]
     });
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
@@ -53,7 +78,8 @@ export default class OfferController extends ControllerBase {
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
-        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new UserIsAuthorMiddleware(this.offerService, 'offerId', 'author')
       ]
     });
     this.addRoute({
@@ -64,7 +90,8 @@ export default class OfferController extends ControllerBase {
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new ValidateDtoMiddleware(UpdateOfferDto),
-        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new UserIsAuthorMiddleware(this.offerService, 'offerId', 'author')
       ]
     });
     this.addRoute({
@@ -77,6 +104,7 @@ export default class OfferController extends ControllerBase {
       ]
     });
     this.addRoute({ path: '/favorites', method: HttpMethod.Get, handler: this.getFavourites });
+    this.addRoute({ path: '/favorite/:offerId',  method: HttpMethod.Patch, handler: this.addToFavourites});
     this.addRoute({ path: '/premium/:city', method: HttpMethod.Get, handler: this.getPremium, middlewares: [new ValidateCityMiddleware('city')] });
   }
 
@@ -115,13 +143,33 @@ export default class OfferController extends ControllerBase {
     this.ok(res, fillDTO(OfferRdo, updatedOffer));
   }
 
-  public async getFavourites({ headers }: CreateOfferRequest, res: Response) {
-    const newOffers = await this.offerService.findFavourites(headers.authorization ?? '');
+  public async getFavourites({ tokenPayload }: CreateOfferRequest, res: Response) {
+    const newOffers = await this.offerService.findFavourites(tokenPayload.id);
     this.ok(res, fillDTO(OfferRdo, newOffers));
   }
 
   public async getPremium({ params }: Request<ParamOfferCity>, res: Response) {
     const newOffers = await this.offerService.findPremiumInCity(params.city as City);
+    this.ok(res, fillDTO(OfferRdo, newOffers));
+  }
+
+  public async uploadPreviewImage({ params, file } : Request<ParamOfferId>, res: Response) {
+    const { offerId } = params;
+    const updateDto = { previewImage: file?.filename };
+    await this.offerService.updateById(offerId, updateDto);
+    this.created(res, fillDTO(UploadImageRdo, updateDto));
+  }
+
+  public async uploadImages({ params, files } : Request<ParamOfferId>, res: Response) {
+    const { offerId } = params;
+    const updateDto = { images: files as unknown as [string, string, string, string, string, string] };
+    await this.offerService.updateById(offerId, updateDto);
+    this.created(res, fillDTO(UploadImageRdo, updateDto));
+  }
+
+  public async addToFavourites({ tokenPayload, params }: Request<ParamOfferId>, res: Response) {
+    const { offerId } = params;
+    const newOffers = await this.offerService.addToFavourites(offerId, tokenPayload.id);
     this.ok(res, fillDTO(OfferRdo, newOffers));
   }
 }

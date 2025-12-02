@@ -3,6 +3,7 @@ import { Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import {
   ControllerBase,
+  DocumentExistsMiddleware,
   HttpError,
   HttpMethod,
   PrivateRouteMiddleware,
@@ -33,6 +34,7 @@ export default class CommentController extends ControllerBase {
       handler: this.create,
       middlewares: [
         new ValidateDtoMiddleware(CreateCommentDto),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
         new PrivateRouteMiddleware(),
       ]
     });

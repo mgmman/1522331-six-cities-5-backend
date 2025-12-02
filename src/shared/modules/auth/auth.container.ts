@@ -1,4 +1,4 @@
-﻿import {ContainerModule, ContainerModuleLoadOptions} from 'inversify/lib/esm';
+﻿import {ContainerModule, ContainerModuleLoadOptions} from 'inversify';
 import {Component} from '../../types';
 import {IExceptionFilter} from '../../libs/rest';
 import {DefaultAuthService} from './default-auth.service';

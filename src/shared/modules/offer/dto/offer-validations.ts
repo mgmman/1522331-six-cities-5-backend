@@ -11,7 +11,8 @@
     invalidFormat: 'city is required and must be one of: Paris, Cologne, Brussels, Amsterdam, Hamburg or Dusseldorf',
   },
   image: {
-    invalidFormat: 'image is required',
+    invalidFormat: 'images must be of type string',
+    length: 'there must be between 1 and 6 images'
   },
   type: {
     invalidFormat: 'type must be one of: apartment, house, room or hotel',

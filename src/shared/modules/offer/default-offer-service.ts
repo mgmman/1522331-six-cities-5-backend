@@ -6,6 +6,7 @@ import { DocumentType, types } from '@typegoose/typegoose';
 import { OfferEntity } from './offer.entity.js';
 import { CreateOfferDto } from './dto/create-offer-dto.js';
 import {UpdateOfferDto} from './dto/update-offer-dto.js';
+import { OfferUpdate } from './types/offer-update.js';
 
 @injectable()
 export class DefaultOfferService implements IOfferService {
@@ -13,6 +14,11 @@ export class DefaultOfferService implements IOfferService {
     @inject(Component.Logger) private readonly logger: ILogger,
     @inject(Component.OfferModel) private readonly offerModel: types.ModelType<OfferEntity>
   ) {}
+
+  public async checkUserIsAuthor(entityId: string, userId: string): Promise<boolean> {
+    const offer = await this.findById(entityId);
+    return offer?.author.id === userId;
+  }
 
   public async find(): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
@@ -27,7 +33,7 @@ export class DefaultOfferService implements IOfferService {
       .exec();
   }
 
-  public async updateById(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null> {
+  public async updateById(offerId: string, dto: OfferUpdate): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
       .findByIdAndUpdate(offerId, dto, {new: true})
       .populate(['userId', 'categories'])

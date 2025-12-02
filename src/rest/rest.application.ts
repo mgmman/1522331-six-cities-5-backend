@@ -1,4 +1,5 @@
 ﻿import { inject, injectable } from 'inversify';
+import cors from 'cors';
 import { ILogger } from '../shared/libs/logger/index.js';
 import { IConfig, RestSchema } from '../shared/libs/config/index.js';
 import { Component } from '../shared/types/index.js';
@@ -50,6 +51,7 @@ export class RestApplication {
       '/upload',
       express.static(this.config.get('UPLOAD_DIRECTORY'))
     );
+    this.server.use(cors());
   }
 
   private async _initExceptionFilters() {
