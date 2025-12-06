@@ -25,8 +25,12 @@ export class UploadFileMiddleware implements IMiddleware {
     const uploadSingleFileMiddleware = multer({ storage })
       .single(this.fieldName);
 
-    const uploadMultipleFiles = multer({ storage }).array(this.fieldName);
+    const uploadMultipleFilesMiddleware = multer({ storage }).array(this.fieldName);
 
-    this.isMultipleFiles ? uploadMultipleFiles(req, res, next) : uploadSingleFileMiddleware(req, res, next);
+    if (this.isMultipleFiles) {
+      uploadMultipleFilesMiddleware(req, res, next);
+    } else {
+      uploadSingleFileMiddleware(req, res, next);
+    }
   }
 }

@@ -6,7 +6,7 @@ import {userContainer} from './shared/modules/user/index.js';
 import {restApplicationContainer} from './rest/rest.container.js';
 import {offerContainer} from './shared/modules/offer/index.js';
 import {commentContainer} from './shared/modules/comment/index.js';
-import {authContainer} from './shared/modules/auth';
+import {authContainer} from './shared/modules/auth/index.js';
 
 
 async function bootstrap() {

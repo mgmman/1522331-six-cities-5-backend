@@ -10,7 +10,7 @@ import {IController} from '../../libs/rest';
 export const userContainer: ContainerModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     options.bind<IUserService>(Component.UserService).to(DefaultUserService).inSingletonScope();
-    // @ts-ignore
+    //@ts-ignore
     options.bind<types.ModelType<UserEntity>>(Component.UserModel).toConstantValue(UserModel);
     options.bind<IController>(Component.UserController).to(UserController).inSingletonScope();
   });

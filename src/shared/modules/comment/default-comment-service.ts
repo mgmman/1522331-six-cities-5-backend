@@ -5,7 +5,7 @@ import { DocumentType, types } from '@typegoose/typegoose';
 import { CommentEntity } from './comment.entity.js';
 import { CreateCommentDto } from './dto/create-comment-dto.js';
 import { IOfferService } from '../offer/offer-service.interface.js';
-import { UpdateOfferDto } from '../offer/dto/update-offer-dto.js';
+import {DEFAULT_COMMENT_COUNT} from '../../constants/index.js';
 
 @injectable()
 export class DefaultCommentService implements ICommentService{
@@ -26,17 +26,27 @@ export class DefaultCommentService implements ICommentService{
 
   public async create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {
     const comment = await this.commentModel.create(dto);
+
     const offer = await this.offerService.findById(dto.offerId);
-    const newRating = (offer!.rating * offer!.commentCount + dto.rating) / (offer!.commentCount + 1);
-    const update = { rating: newRating, commentCount: offer!.commentCount + 1 };
-    await this.offerService.updateById(offer!.id, update)
-    return comment.populate('userId');
+
+    if (!offer) {
+      throw new Error(`offer with id ${dto.offerId} uis unexpectedly null`);
+    }
+
+    const newRating = (offer.rating * offer.commentCount + dto.rating) / (offer.commentCount + 1);
+    const update = { rating: newRating, commentCount: offer.commentCount + 1 };
+
+    await this.offerService.updateById(offer.id, update);
+    return comment.populate('author');
   }
 
-  public async findByOfferId(offerId: string): Promise<DocumentType<CommentEntity>[]> {
+  public async findByOfferId(offerId: string, limit?: number): Promise<DocumentType<CommentEntity>[]> {
+    limit ??= DEFAULT_COMMENT_COUNT;
     return this.commentModel
       .find({offerId})
-      .populate('userId');
+      .limit(limit)
+      .sort('-createdAt')
+      .populate('author');
   }
 
   public async deleteByOfferId(offerId: string): Promise<number> {

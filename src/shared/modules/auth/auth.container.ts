@@ -1,9 +1,9 @@
 ﻿import {ContainerModule, ContainerModuleLoadOptions} from 'inversify';
-import {Component} from '../../types';
-import {IExceptionFilter} from '../../libs/rest';
-import {DefaultAuthService} from './default-auth.service';
-import {AuthExceptionFilter} from './auth.exception-filter';
-import {IAuthService} from './auth-service.interface';
+import {Component} from '../../types/index.js';
+import {IExceptionFilter} from '../../libs/rest/index.js';
+import {DefaultAuthService} from './default-auth.service.js';
+import {AuthExceptionFilter} from './auth.exception-filter.js';
+import {IAuthService} from './auth-service.interface.js';
 
 export const authContainer: ContainerModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {

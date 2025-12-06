@@ -9,14 +9,11 @@ import { OfferUpdate } from './types/offer-update.js';
 export interface IOfferService extends IDocumentExists, ICheckUserIsAuthor {
   create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>>;
   findById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
-  find(): Promise<DocumentType<OfferEntity>[]>;
+  find(limit?: number): Promise<DocumentType<OfferEntity>[]>;
   deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   updateById(offerId: string, dto: OfferUpdate): Promise<DocumentType<OfferEntity> | null>;
-  incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null>;
-  findPremiumInCity(city: City): Promise<DocumentType<OfferEntity>[]>;
+  findPremiumInCity(city: City, limit?: number): Promise<DocumentType<OfferEntity>[]>;
   findFavourites(userId: string): Promise<DocumentType<OfferEntity>[]>;
-  addToFavourites(offerId: string, userId: string): Promise<DocumentType<OfferEntity> | null>;
-  deleteFromFavourites(offerId: string, userId: string): Promise<DocumentType<OfferEntity> | null>;
+  addOrRemoveFavourite(offerId: string, userId: string): Promise<DocumentType<OfferEntity> | null>;
   exists(documentId: string): Promise<boolean>;
-  recalculateRating(offerId: string): Promise<void>;
 }

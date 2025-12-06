@@ -6,6 +6,6 @@ import { ICheckUserIsAuthor } from '../../types/check-user-is-author.service.js'
 
 export interface ICommentService extends IDocumentExists, ICheckUserIsAuthor {
   create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>>;
-  findByOfferId(offerId: string): Promise<DocumentType<CommentEntity>[]>;
+  findByOfferId(offerId: string, limit?: number): Promise<DocumentType<CommentEntity>[]>;
   deleteByOfferId(offerId: string): Promise<number | null>;
 }

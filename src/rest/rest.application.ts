@@ -6,7 +6,7 @@ import { Component } from '../shared/types/index.js';
 import { IDatabaseClient } from '../shared/libs/db-client/index.js';
 import { getMongoURI } from '../shared/helpers/index.js';
 import express, {Express} from 'express';
-import {IController, IExceptionFilter} from '../shared/libs/rest/index.js';
+import {IController, IExceptionFilter, ParseTokenMiddleware} from '../shared/libs/rest/index.js';
 
 @injectable()
 export class RestApplication {
@@ -19,6 +19,8 @@ export class RestApplication {
     @inject(Component.OfferController) private readonly offersController: IController,
     @inject(Component.ExceptionFilter) private readonly appExceptionFilter: IExceptionFilter,
     @inject(Component.UserController) private readonly userController: IController,
+    @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: IExceptionFilter,
+    @inject(Component.CommentController) private readonly commentController: IController,
   ) {
     this.server = express();
   }
@@ -43,18 +45,22 @@ export class RestApplication {
   private async _initControllers() {
     this.server.use('/offers', this.offersController.router);
     this.server.use('/users', this.userController.router);
+    this.server.use('/comments', this.commentController.router);
   }
 
   private async _initMiddleware() {
+    const authenticateMiddleware = new ParseTokenMiddleware(this.config.get('JWT_SECRET'));
     this.server.use(express.json());
     this.server.use(
       '/upload',
       express.static(this.config.get('UPLOAD_DIRECTORY'))
     );
     this.server.use(cors());
+    this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
   }
 
   private async _initExceptionFilters() {
+    this.server.use(this.authExceptionFilter.catch.bind(this.authExceptionFilter));
     this.server.use(this.appExceptionFilter.catch.bind(this.appExceptionFilter));
   }
 

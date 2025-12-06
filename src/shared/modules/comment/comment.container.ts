@@ -10,5 +10,5 @@ export const commentContainer: ContainerModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     options.bind<ICommentService>(Component.CommentService).to(DefaultCommentService).inSingletonScope();
     options.bind<types.ModelType<CommentEntity>>(Component.CommentModel).toConstantValue(CommentModel);
-    options.bind<CommentController>(Component.CommentController).to(CommentController);
+    options.bind<CommentController>(Component.CommentController).to(CommentController).inSingletonScope();
   });
