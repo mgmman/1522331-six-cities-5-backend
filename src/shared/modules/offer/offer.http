@@ -1,0 +1,76 @@
+﻿### GET request to example server
+GET http://localhost:1234/offers/?count=2 HTTP/1.1
+
+### GET request to example server
+GET http://localhost:1234/offers/?count=2 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJuYW1lIjoiSmFjayBUb3JyYW5jZSIsImlkIjoiNjhmY2E3ZmI4M2MzOTVmZWQxNTAzYjdmIiwiaWF0IjoxNzY1MDE5MTQ3LCJleHAiOjE3NjUxOTE5NDd9.JjFzH1p0-uC0NDhiMakUyiyF13dAmXKV1Zn-NPhLB8A
+
+###
+
+GET http://localhost:1234/offers/693416f5985008f4614f1b82 HTTP/1.1
+
+###
+
+PATCH http://localhost:1234/offers/favorite/68eba45b72125def021ec97a HTTP/1.1
+
+###
+
+PATCH http://localhost:1234/offers/favorite/693416f5985008f4614f1b82 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJuYW1lIjoiSmFjayBUb3JyYW5jZSIsImlkIjoiNjhmY2E3ZmI4M2MzOTVmZWQxNTAzYjdmIiwiaWF0IjoxNzY1MDE5MTQ3LCJleHAiOjE3NjUxOTE5NDd9.JjFzH1p0-uC0NDhiMakUyiyF13dAmXKV1Zn-NPhLB8A
+
+###
+
+POST http://localhost:1234/offers HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJuYW1lIjoiSmFjayBUb3JyYW5jZSIsImlkIjoiNjhmY2E3ZmI4M2MzOTVmZWQxNTAzYjdmIiwiaWF0IjoxNzY1MDE5MTQ3LCJleHAiOjE3NjUxOTE5NDd9.JjFzH1p0-uC0NDhiMakUyiyF13dAmXKV1Zn-NPhLB8A
+Content-Type: application/json
+
+{
+  "title": "It is a title for Anon offer",
+  "description": "It is a title for Anon offer. It is a title for Anon offer. It is a title for Anon offer",
+  "city": "Paris",
+  "isPremium": true,
+  "previewImage": "placeImage-01.jpg",
+  "images": [
+    "placeImage-01.jpg",
+    "placeImage-02.jpg",
+    "placeImage-03.jpg",
+    "placeImage-04.jpg",
+    "placeImage-05.jpg",
+    "placeImage-06.jpg"
+  ],
+  "type": "house",
+  "bedrooms": 5,
+  "maxGuests": 9,
+  "price": 15012,
+  "amenities": [
+    "Breakfast",
+    "Washer",
+    "Towels"
+  ],
+  "coordinates": {
+    "longitude": 12.133242,
+    "latitude": 1.1234562
+  }
+}
+
+###
+
+PATCH http://localhost:1234/offers/693416f5985008f4614f1b82 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJuYW1lIjoiSmFjayBUb3JyYW5jZSIsImlkIjoiNjhmY2E3ZmI4M2MzOTVmZWQxNTAzYjdmIiwiaWF0IjoxNzY1MDE5MTQ3LCJleHAiOjE3NjUxOTE5NDd9.JjFzH1p0-uC0NDhiMakUyiyF13dAmXKV1Zn-NPhLB8A
+Content-Type: application/json
+
+{
+  "title": "abobaboba23123",
+  "price": 15222
+}
+
+###
+
+GET http://localhost:1234/offers/favorites/ HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJuYW1lIjoiSmFjayBUb3JyYW5jZSIsImlkIjoiNjhmY2E3ZmI4M2MzOTVmZWQxNTAzYjdmIiwiaWF0IjoxNzY1MDE5MTQ3LCJleHAiOjE3NjUxOTE5NDd9.JjFzH1p0-uC0NDhiMakUyiyF13dAmXKV1Zn-NPhLB8A
+
+###
+GET http://localhost:1234/offers/premium/Paris HTTP/1.1
+
+###
+GET http://localhost:1234/offers/premium/ad HTTP/1.1

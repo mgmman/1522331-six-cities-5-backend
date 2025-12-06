@@ -7,19 +7,20 @@ import {City, Component} from '../../types/index.js';
 import { ILogger } from '../../libs/logger/index.js';
 import { Request, Response } from 'express';
 import { IOfferService } from './offer-service.interface.js';
-import { fillDTO } from '../../helpers/index.js';
+import {fillDTO, fillIsFavorite} from '../../helpers/index.js';
 import { OfferRdo } from './rdo/offer-rdo.js';
 import { ICommentService } from '../comment/index.js';
 import {ParamOfferCity, ParamOfferId} from './types/offer-params.js';
 import {UpdateOfferDto} from './dto/update-offer-dto.js';
 import {CreateOfferRequest} from './types/create-offer-request.type';
 import {CreateOfferDto} from './dto/create-offer-dto.js';
-import {CommentRdo} from '../comment/rdo/comment-rdo.js';
 import {ValidateCityMiddleware} from '../../libs/rest/middleware/validate-city.middleware.js';
 import { UploadImageRdo } from './rdo/upload-image.rdo.js';
 import { IConfig, RestSchema } from '../../libs/config/index.js';
 import { UploadFileMiddleware } from '../../libs/rest/middleware/upload-file.middleware.js';
 import { UserIsAuthorMiddleware } from '../../libs/rest/middleware/user-is-author.middleware.js';
+import {PathTransformer} from '../../libs/rest/path-transformer/path-transformer.js';
+import {ShortOfferInfoRdo} from './rdo/short-offer-info-rdo.js';
 
 @injectable()
 export default class OfferController extends ControllerBase {
@@ -28,10 +29,15 @@ export default class OfferController extends ControllerBase {
     @inject(Component.OfferService) private readonly offerService: IOfferService,
     @inject(Component.CommentService) private readonly commentService: ICommentService,
     @inject(Component.Config) private readonly configService: IConfig<RestSchema>,
+    @inject(Component.PathTransformer) protected readonly pathTransformer: PathTransformer,
   ) {
-    super(logger);
+    super(logger, pathTransformer);
 
     this.logger.info('Register routes for OfferController');
+    this.addRoute({ path: '/favorites', method: HttpMethod.Get, handler: this.getFavourites });
+    this.addRoute({ path: '/premium/:city', method: HttpMethod.Get, handler: this.getPremium,
+      middlewares: [new ValidateCityMiddleware('city')]
+    });
     this.addRoute({
       path: '/:offerId',
       method: HttpMethod.Get,
@@ -94,29 +100,25 @@ export default class OfferController extends ControllerBase {
         new UserIsAuthorMiddleware(this.offerService, 'offerId', 'author')
       ]
     });
-    this.addRoute({
-      path: '/:offerId/comments',
-      method: HttpMethod.Get,
-      handler: this.getComments,
+    this.addRoute({ path: '/favorite/:offerId', method: HttpMethod.Patch, handler: this.addOrDeleteFavourite,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
-        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
       ]
     });
-    this.addRoute({ path: '/favorites', method: HttpMethod.Get, handler: this.getFavourites });
-    this.addRoute({ path: '/favorite/:offerId',  method: HttpMethod.Patch, handler: this.addToFavourites});
-    this.addRoute({ path: '/premium/:city', method: HttpMethod.Get, handler: this.getPremium, middlewares: [new ValidateCityMiddleware('city')] });
   }
 
-  public async getOffer({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+  public async getOffer({ params, tokenPayload }: Request<ParamOfferId>, res: Response): Promise<void> {
     const { offerId } = params;
     const offer = await this.offerService.findById(offerId);
-    this.ok(res, fillDTO(OfferRdo, offer));
+    this.ok(res, fillDTO(OfferRdo, fillIsFavorite(offer, tokenPayload?.id)));
   }
 
-  public async index(_req: Request, res: Response) {
-    const offers = await this.offerService.find();
-    this.ok(res, fillDTO(OfferRdo, offers));
+  public async index({query, tokenPayload}: Request, res: Response) {
+    const count = query.count ? Number(query.count) : undefined;
+    const offers = await this.offerService.find(count);
+    this.ok(res, fillDTO(ShortOfferInfoRdo, offers.map((x) => fillIsFavorite(x, tokenPayload?.id))));
   }
 
   public async create({ body, tokenPayload }: CreateOfferRequest, res: Response): Promise<void> {
@@ -133,24 +135,20 @@ export default class OfferController extends ControllerBase {
     this.noContent(res, offer);
   }
 
-  public async getComments({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
-    const comments = await this.commentService.findByOfferId(params.offerId);
-    this.ok(res, fillDTO(CommentRdo, comments));
-  }
-
-  public async update({ body, params }: Request<ParamOfferId, unknown, UpdateOfferDto>, res: Response): Promise<void> {
+  public async update({ body, params, tokenPayload }: Request<ParamOfferId, unknown, UpdateOfferDto>, res: Response): Promise<void> {
     const updatedOffer = await this.offerService.updateById(params.offerId, body);
-    this.ok(res, fillDTO(OfferRdo, updatedOffer));
+    this.ok(res, fillDTO(OfferRdo, fillIsFavorite(updatedOffer, tokenPayload?.id)));
   }
 
   public async getFavourites({ tokenPayload }: CreateOfferRequest, res: Response) {
     const newOffers = await this.offerService.findFavourites(tokenPayload.id);
-    this.ok(res, fillDTO(OfferRdo, newOffers));
+    this.ok(res, fillDTO(OfferRdo, newOffers.map((x) => fillIsFavorite(x, tokenPayload?.id))));
   }
 
-  public async getPremium({ params }: Request<ParamOfferCity>, res: Response) {
-    const newOffers = await this.offerService.findPremiumInCity(params.city as City);
-    this.ok(res, fillDTO(OfferRdo, newOffers));
+  public async getPremium({ params, query, tokenPayload }: Request<ParamOfferCity>, res: Response) {
+    const count = query.count ? Number(query.count) : undefined;
+    const newOffers = await this.offerService.findPremiumInCity(params.city as City, count);
+    this.ok(res, fillDTO(OfferRdo, newOffers.map((x) => fillIsFavorite(x, tokenPayload?.id))));
   }
 
   public async uploadPreviewImage({ params, file } : Request<ParamOfferId>, res: Response) {
@@ -167,9 +165,10 @@ export default class OfferController extends ControllerBase {
     this.created(res, fillDTO(UploadImageRdo, updateDto));
   }
 
-  public async addToFavourites({ tokenPayload, params }: Request<ParamOfferId>, res: Response) {
+  public async addOrDeleteFavourite({ tokenPayload, params }: Request<ParamOfferId>, res: Response) {
     const { offerId } = params;
-    const newOffers = await this.offerService.addToFavourites(offerId, tokenPayload.id);
-    this.ok(res, fillDTO(OfferRdo, newOffers));
+    const newOffer = await this.offerService.addOrRemoveFavourite(offerId, tokenPayload.id);
+    const dto = fillDTO(OfferRdo, fillIsFavorite(newOffer, tokenPayload.id));
+    this.ok(res, dto);
   }
 }

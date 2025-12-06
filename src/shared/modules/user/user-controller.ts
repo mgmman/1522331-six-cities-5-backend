@@ -21,6 +21,7 @@ import {CreateUserDto} from './dto/create-user-dto.js';
 import {UploadFileMiddleware} from '../../libs/rest/middleware/upload-file.middleware.js';
 import { IAuthService } from '../auth/auth-service.interface.js';
 import {LoggedUserRdo} from './rdo/logged-user-rdo.js';
+import {PathTransformer} from '../../libs/rest/path-transformer/path-transformer.js';
 
 @injectable()
 export class UserController extends ControllerBase {
@@ -29,8 +30,9 @@ export class UserController extends ControllerBase {
     @inject(Component.UserService) private readonly userService: IUserService,
     @inject(Component.Config) private readonly configService: IConfig<RestSchema>,
     @inject(Component.AuthService) private readonly authService: IAuthService,
+    @inject(Component.PathTransformer) protected readonly pathTransformer: PathTransformer,
   ) {
-    super(logger);
+    super(logger, pathTransformer);
     this.logger.info('Register routes for UserController…');
 
     this.addRoute({ path: '/register', method: HttpMethod.Post, handler: this.create, middlewares: [new ValidateDtoMiddleware(CreateUserDto)] });
@@ -89,9 +91,9 @@ export class UserController extends ControllerBase {
   }
 
   public async checkAuthenticate({ tokenPayload: { email }}: Request, res: Response) {
-    const foundedUser = await this.userService.findByEmail(email);
+    const foundUser = await this.userService.findByEmail(email);
 
-    if (! foundedUser) {
+    if (!foundUser) {
       throw new HttpError(
         StatusCodes.UNAUTHORIZED,
         'Unauthorized',
@@ -99,6 +101,6 @@ export class UserController extends ControllerBase {
       );
     }
 
-    this.ok(res, fillDTO(LoggedUserRdo, foundedUser));
+    this.ok(res, fillDTO(LoggedUserRdo, foundUser));
   }
 }

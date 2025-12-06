@@ -1,4 +1,0 @@
-﻿### GET request to example server
-GET http://localhost:1234/offers/ HTTP/1.1
-
-###

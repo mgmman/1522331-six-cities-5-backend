@@ -1,4 +1,5 @@
 ﻿import {AMENITIES, Amenity, City, HousingType, isMemberOfUnion, Offer, UserType} from '../types/index.js';
+import {OfferEntity} from '../modules/offer';
 
 export function parseOffer(data: string): Offer {
   const [
@@ -49,3 +50,13 @@ export function parseOffer(data: string): Offer {
     coordinates: {latitude: parseFloat(latitude), longitude: parseFloat(longitude)},
   };
 }
+
+export const fillIsFavorite = (data: OfferEntity | null, userId?: string):
+  OfferEntity & {isFavorite?: boolean} | null => {
+  if (!data){
+    return null;
+  }
+  // @ts-ignore
+  data.isFavorite = data?.favoritedBy.some((x) => x._id.toString() === userId) ?? false;
+  return data;
+};

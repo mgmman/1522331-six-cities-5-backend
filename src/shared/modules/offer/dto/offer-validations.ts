@@ -22,6 +22,9 @@
     minValue: 'Minimum price is 100',
     maxValue: 'Maximum price is 200000',
   },
+  amenities: {
+    invalidFormat: 'amenities must be array of type string',
+  },
   isPremium: {
     invalidFormat: 'isPremium must be a bool or not defined',
   },

@@ -12,10 +12,9 @@ export class UserIsAuthorMiddleware implements IMiddleware {
     private readonly authorfieldName: string,
   ) {}
 
-  public async execute({ params }: Request, _res: Response, next: NextFunction): Promise<void> {
+  public async execute({ params, tokenPayload }: Request, _res: Response, next: NextFunction): Promise<void> {
     const documentId = params[this.documentIdFieldName];
-    const authorId = params[this.authorfieldName];
-    if (! await this.service.checkUserIsAuthor(documentId, authorId)) {
+    if (! await this.service.checkUserIsAuthor(documentId, tokenPayload.id)) {
       throw new HttpError(
         StatusCodes.FORBIDDEN,
         `${this.authorfieldName} is not an author of requested document`,

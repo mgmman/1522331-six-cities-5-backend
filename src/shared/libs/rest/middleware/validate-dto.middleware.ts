@@ -9,7 +9,7 @@ export class ValidateDtoMiddleware implements IMiddleware {
 
   public async execute({ body }: Request, res: Response, next: NextFunction): Promise<void> {
     const dtoInstance = plainToInstance(this.dto, body);
-    const errors = await validate(dtoInstance);
+    const errors = await validate(dtoInstance, {validationError: {target: false}});
 
     if (errors.length > 0) {
       res.status(StatusCodes.BAD_REQUEST).send(errors);
