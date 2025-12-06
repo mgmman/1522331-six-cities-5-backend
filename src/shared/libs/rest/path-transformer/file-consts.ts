@@ -1,14 +1,16 @@
 export const DEFAULT_STATIC_IMAGES = [
   'default-avatar.jpg',
-  'cat-auto.jpg',
-  'cat-books.jpg',
-  'cat-clothes.jpg',
-  'cat-games.jpg',
-  'cat-other.jpg',
-  'cat-sport.jpg',
+  'offer1-preview.jpg',
+  'offer1-1.jpg',
+  'offer1-2.jpg',
+  'offer1-3.jpg',
+  'offer1-4.jpg',
+  'offer1-5.jpg',
+  'offer1-6.jpg'
 ];
 
 export const STATIC_RESOURCE_FIELDS = [
-  'avatarPath',
-  'image'
+  'images',
+  'previewImage',
+  'avatar'
 ];
