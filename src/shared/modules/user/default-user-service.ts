@@ -6,13 +6,20 @@ import { inject, injectable } from 'inversify';
 import { Component } from '../../types/index.js';
 import { ILogger } from '../../libs/logger/index.js';
 import { DEFAULT_AVATAR_FILE_NAME } from './user-consts.js';
-
+import { UpdateUserDto } from './dto/update-user-dto.js';
 @injectable()
 export class DefaultUserService implements IUserService {
   constructor(
     @inject(Component.Logger) private readonly logger: ILogger,
     @inject(Component.UserModel) private readonly userModel: types.ModelType<UserEntity>
-  ) {}
+  ) {
+  }
+
+  updateById(id: string, update: UpdateUserDto): Promise<DocumentType<UserEntity, types.BeAnObject> | null> {
+    return this.userModel
+      .findByIdAndUpdate(id, update, {new: true})
+      .exec();
+  }
 
   public async exists(documentId: string): Promise<boolean> {
     return (await this.userModel

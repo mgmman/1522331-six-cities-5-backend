@@ -84,10 +84,19 @@ export class UserController extends ControllerBase {
     this.ok(res, responseData);
   }
 
-  public async uploadAvatar(req: Request, res: Response) {
-    this.created(res, {
-      filepath: req.file?.path
-    });
+  public async uploadAvatar({file, params}: Request, res: Response) {
+    if(!file) {
+      throw new HttpError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        'No file selected for upload',
+        'UserController',
+      );
+    }
+
+    const {userId} = params;
+    const updateDto = {avatar: file.filename};
+    await this.userService.updateById(userId, updateDto);
+    this.created(res, file.path);
   }
 
   public async checkAuthenticate({ tokenPayload: { email }}: Request, res: Response) {

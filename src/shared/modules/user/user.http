@@ -43,3 +43,9 @@ Content-Type: image/png
 ###
 
 GET http://localhost:1234/upload/test.txt HTTP/1.1
+
+###
+
+GET http://localhost:1234/users/login HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJuYW1lIjoiSmFjayBUb3JyYW5jZSIsImlkIjoiNjhmY2E3ZmI4M2MzOTVmZWQxNTAzYjdmIiwiaWF0IjoxNzY1MDE5MTQ3LCJleHAiOjE3NjUxOTE5NDd9.JjFzH1p0-uC0NDhiMakUyiyF13dAmXKV1Zn-NPhLB8A
+
