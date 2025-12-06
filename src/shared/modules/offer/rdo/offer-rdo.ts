@@ -54,7 +54,7 @@ export class OfferRdo {
   @Expose()
   public coordinates: Coordinates;
 
-  @Expose({ name: 'userId'})
+  @Expose()
   @Type(() => UserRdo)
   public author: UserRdo;
 }

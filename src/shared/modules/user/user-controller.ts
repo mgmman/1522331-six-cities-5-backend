@@ -110,6 +110,6 @@ export class UserController extends ControllerBase {
       );
     }
 
-    this.ok(res, fillDTO(LoggedUserRdo, foundUser));
+    this.ok(res, fillDTO(UserRdo, foundUser));
   }
 }
