@@ -29,14 +29,14 @@ Content-Type: application/json
   "description": "It is a title for Anon offer. It is a title for Anon offer. It is a title for Anon offer",
   "city": "Paris",
   "isPremium": true,
-  "previewImage": "placeImage-01.jpg",
+  "previewImage": "offer8-preview.jpg",
   "images": [
-    "placeImage-01.jpg",
-    "placeImage-02.jpg",
-    "placeImage-03.jpg",
-    "placeImage-04.jpg",
-    "placeImage-05.jpg",
-    "placeImage-06.jpg"
+    "offer1-1.jpg",
+    "offer1-2.jpg",
+    "offer1-3.jpg",
+    "offer1-4.jpg",
+    "offer1-5.jpg",
+    "offer1-6.jpg"
   ],
   "type": "house",
   "bedrooms": 5,

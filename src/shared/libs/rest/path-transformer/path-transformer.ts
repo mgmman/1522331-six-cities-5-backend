@@ -36,19 +36,27 @@ export class PathTransformer {
         if (Object.hasOwn(current, key)) {
           const value = current[key];
 
-          if (isObject(value)) {
+          if (isObject(value) && !Array.isArray(value)) {
             stack.push(value);
             continue;
           }
 
-          if (this.isStaticProperty(key) && typeof value === 'string') {
+          if (this.isStaticProperty(key)) {
             const staticPath = STATIC_FILES_ROUTE;
             const uploadPath = STATIC_UPLOAD_ROUTE;
             const serverHost = this.config.get('HOST');
             const serverPort = this.config.get('PORT');
-
-            const rootPath = this.hasDefaultImage(value) ? staticPath : uploadPath;
-            current[key] = `${getFullServerPath(serverHost, serverPort)}${rootPath}/${value}`;
+            if (typeof value === 'string') {
+              const rootPath = this.hasDefaultImage(value) ? staticPath : uploadPath;
+              current[key] = `${getFullServerPath(serverHost, serverPort)}${rootPath}/${value}`;
+            } else if (Array.isArray(value) && value.every((x) => typeof x === 'string')) {
+              const res: string[] = [];
+              for (const x of value){
+                const rootPath = this.hasDefaultImage(x) ? staticPath : uploadPath;
+                res.push(`${getFullServerPath(serverHost, serverPort)}${rootPath}/${x}`);
+              }
+              current[key] = res;
+            }
           }
         }
       }
